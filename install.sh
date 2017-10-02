@@ -51,14 +51,12 @@ if [ ! -d "$INSTALLDIR" ]; then
   echo "As we can't find my.files in the current directory, we will create it."
   git clone git://github.com/byzhang/my.files.git $INSTALLDIR
   create_symlinks
-  cd $INSTALLDIR
-
 else
   echo "Seems like you already are one of ours, so let's update Vimified to be as awesome as possible."
-  cd $INSTALLDIR
-  #git pull origin master
+  #git -C $INSTALLDIR pull origin master
   create_symlinks
 fi
+cd $INSTALLDIR
 
 if [ ! -d "vim/bundle" ]; then
   echo "Now, we will create a separate directory to store the bundles Vim will use."
@@ -82,6 +80,10 @@ echo | echo | vim +PluginInstall +qall &>/dev/null
 
 cd ~/.vim/bundle/YouCompleteMe
 ./install.py --clang-completer
+if [ "$?" != "0" ]; then
+  echo "YCM installation failed"
+  exit 1
+fi
 
 cd
 ln -sf my.files/cmake .cmake
